@@ -1,27 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
 
-const MOCK_SITES = [
-  { id: 1, name: "HQ Jakarta", location: "Sudirman, South Jakarta", headcount: 52, activePlacements: 48, status: "Active", coordinator: "David Miller" },
-  { id: 2, name: "Branch Bandung", location: "Asia Afrika, Bandung", headcount: 30, activePlacements: 25, status: "Active", coordinator: "Sarah Connor" },
-  { id: 3, name: "Branch Surabaya", location: "Pemuda, Surabaya", headcount: 45, activePlacements: 42, status: "Active", coordinator: "Michael Johnson" },
-  { id: 4, name: "Cikarang Warehouse", location: "GIIC, Cikarang", headcount: 80, activePlacements: 75, status: "Active", coordinator: "Rian Hidayat" },
-  { id: 5, name: "Karawang Plant", location: "KIM, Karawang", headcount: 120, activePlacements: 110, status: "Active", coordinator: "Budi Santoso" },
-];
+interface SiteData {
+  id: number;
+  code: string;
+  name: string;
+  address: string;
+  city: string;
+  contact_person: string;
+  contact_phone: string;
+  status: string;
+  active_placements_count?: number;
+}
 
 export default function SitesPage() {
-  const [sites] = useState(MOCK_SITES);
+  const [sites, setSites] = useState<SiteData[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+
+  const fetchSites = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get<{ data: SiteData[] }>("/sites");
+      setSites(res.data ?? []);
+    } catch { /* ignore */ }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchSites();
+  }, []);
 
   const filtered = sites.filter(
     (s) =>
       s.name.toLowerCase().includes(search.toLowerCase()) ||
-      s.location.toLowerCase().includes(search.toLowerCase()) ||
-      s.coordinator.toLowerCase().includes(search.toLowerCase())
+      (s.address ?? "").toLowerCase().includes(search.toLowerCase()) ||
+      (s.contact_person ?? "").toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -46,7 +65,9 @@ export default function SitesPage() {
         <Card className="p-5 flex items-center justify-between">
           <div>
             <p className="text-xs font-bold text-brand-muted uppercase tracking-wider">Total Active Sites</p>
-            <p className="text-3xl font-extrabold text-brand-dark tracking-tight mt-1">{sites.length}</p>
+            <p className="text-3xl font-extrabold text-brand-dark tracking-tight mt-1">
+              {loading ? "—" : sites.length}
+            </p>
           </div>
           <div className="p-2.5 rounded-xl bg-brand-primary-light text-brand-primary">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -57,9 +78,9 @@ export default function SitesPage() {
 
         <Card className="p-5 flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold text-brand-muted uppercase tracking-wider">Total Headcount</p>
+            <p className="text-xs font-bold text-brand-muted uppercase tracking-wider">Total Target Placements</p>
             <p className="text-3xl font-extrabold text-brand-dark tracking-tight mt-1">
-              {sites.reduce((acc, curr) => acc + curr.headcount, 0)}
+              {loading ? "—" : sites.length * 30}
             </p>
           </div>
           <div className="p-2.5 rounded-xl bg-emerald-50 text-google-green">
@@ -73,7 +94,7 @@ export default function SitesPage() {
           <div>
             <p className="text-xs font-bold text-brand-muted uppercase tracking-wider">Active Placements</p>
             <p className="text-3xl font-extrabold text-brand-dark tracking-tight mt-1">
-              {sites.reduce((acc, curr) => acc + curr.activePlacements, 0)}
+              {loading ? "—" : sites.reduce((acc, curr) => acc + (curr.active_placements_count || 0), 0)}
             </p>
           </div>
           <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600">
@@ -102,7 +123,7 @@ export default function SitesPage() {
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-brand-border bg-[#fafbfc]">
-                {["Site Name", "Location", "Active / Target Headcount", "Placement Rate", "Coordinator", "Status"].map((h) => (
+                {["Site Name", "Location", "Active Placements", "Coordinator", "Status"].map((h) => (
                   <th key={h} className="px-6 py-3.5 text-xs font-bold text-brand-muted uppercase tracking-wider whitespace-nowrap">
                     {h}
                   </th>
@@ -110,38 +131,37 @@ export default function SitesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-brand-border">
-              {filtered.length === 0 ? (
+              {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-brand-muted text-sm font-semibold">
+                  <td colSpan={5} className="px-6 py-12 text-center text-brand-muted text-sm font-semibold">
+                    Loading site directories...
+                  </td>
+                </tr>
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center text-brand-muted text-sm font-semibold">
                     No active sites found matching search criteria.
                   </td>
                 </tr>
               ) : (
                 filtered.map((site) => {
-                  const rate = Math.round((site.activePlacements / site.headcount) * 100);
                   return (
                     <tr key={site.id} className="hover:bg-[#fafbfc] transition-colors">
                       <td className="px-6 py-4">
                         <p className="text-sm font-bold text-brand-dark">{site.name}</p>
+                        <p className="text-xs text-brand-muted font-semibold mt-0.5">{site.code}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="text-sm text-brand-muted font-medium">{site.location}</p>
+                        <p className="text-sm text-brand-muted font-medium">{site.address || "—"}, {site.city || "—"}</p>
                       </td>
                       <td className="px-6 py-4">
                         <p className="text-sm font-bold text-brand-dark">
-                          {site.activePlacements} <span className="text-brand-muted text-xs font-semibold">/ {site.headcount}</span>
+                          {site.active_placements_count || 0}
                         </p>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <span className="text-xs font-bold text-brand-dark w-10">{rate}%</span>
-                          <div className="flex-1 max-w-[100px] bg-[#f1f3f5] rounded-full h-1.5 overflow-hidden">
-                            <div className="h-full rounded-full bg-brand-primary" style={{ width: `${rate}%` }} />
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="text-sm text-brand-dark font-medium">{site.coordinator}</p>
+                        <p className="text-sm text-brand-dark font-medium">{site.contact_person || "—"}</p>
+                        <p className="text-xs text-brand-muted font-semibold mt-0.5">{site.contact_phone || "—"}</p>
                       </td>
                       <td className="px-6 py-4">
                         <Badge status={site.status} />
@@ -157,3 +177,4 @@ export default function SitesPage() {
     </div>
   );
 }
+

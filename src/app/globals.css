@@ -5,14 +5,14 @@
 :root {
   --font-sans: var(--font-sans), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   
-  /* Modern Premium UI Palette (HSL Slate/Sapphire Theme) */
-  --primary: 220 90% 56%;       /* #1e5cf2 - Slate Blue */
-  --primary-hover: 220 90% 48%; /* Deep Slate Blue */
-  --primary-light: 220 90% 96%; /* Soft blue highlight */
-  --text-dark: 224 71% 4%;      /* Midnight Slate text */
-  --text-muted: 215 16% 47%;    /* Slate gray */
-  --border-light: 214 32% 91%;  /* Fine borders */
-  --bg-main: 210 40% 98%;       /* Soft off-white main bg */
+  /* Authentic Google Workspace Material HSL Palette */
+  --primary: 217 89% 51%;       /* #1a73e8 - Google Blue */
+  --primary-hover: 217 89% 41%; /* #1557b0 - Google Blue Dark */
+  --primary-light: 217 89% 96%; /* #e8f0fe - Google Blue Soft */
+  --text-dark: 225 6% 13%;      /* #202124 - Google Dark Gray text */
+  --text-muted: 218 5% 39%;    /* #5f6368 - Google Muted text */
+  --border-light: 220 14% 87%;  /* #dadce0 - Google Border light */
+  --bg-main: 220 33% 98%;       /* #f8f9fa - Google main background */
 }
 
 * {

@@ -40,88 +40,102 @@ export default function Login() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-[#fcfdfe] px-4 overflow-hidden">
-      {/* Premium ambient light shapes */}
-      <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-brand-primary/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
-
-      <div className="w-full max-w-md z-10 animate-fade-in">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8f9fa] px-4 font-sans antialiased text-[#202124]">
+      <div className="w-full max-w-[450px] bg-white border border-[#dadce0] rounded-lg px-8 py-10 shadow-[0_2px_4px_rgba(0,0,0,0.08),0_8px_16px_rgba(0,0,0,0.08)]">
+        
+        {/* Google-like logo block */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-tr from-brand-primary to-indigo-600 text-white shadow-lg shadow-brand-primary/20 mb-4 hover:scale-105 transition-transform duration-300">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
+          <div className="inline-flex items-center gap-1.5 justify-center mb-4 select-none">
+            {/* Google colored G emblem or custom ERP letter logo */}
+            <span className="text-2xl font-bold text-[#4285F4]">O</span>
+            <span className="text-2xl font-bold text-[#EA4335]">u</span>
+            <span className="text-2xl font-bold text-[#FBBC05]">t</span>
+            <span className="text-2xl font-bold text-[#4285F4]">s</span>
+            <span className="text-2xl font-bold text-[#34A853]">o</span>
+            <span className="text-2xl font-bold text-[#EA4335]">u</span>
+            <span className="text-2xl font-bold text-[#4285F4]">r</span>
+            <span className="text-2xl font-bold text-[#34A853]">c</span>
+            <span className="text-2xl font-bold text-[#FBBC05]">e</span>
+            <span className="text-xl font-bold text-[#5f6368] ml-1">Pro</span>
           </div>
-          <h1 className="text-3xl font-bold text-brand-dark tracking-tight">OutsourcePro</h1>
-          <p className="text-brand-muted text-sm mt-1.5 font-medium">Enterprise Management Platform</p>
+          <h1 className="text-2xl font-normal text-[#202124] tracking-tight">Sign in</h1>
+          <p className="text-sm text-[#5f6368] mt-2">to continue to OutsourcePro Workspace</p>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-md border border-brand-border rounded-2xl p-8 shadow-premium">
-          <div className="mb-6">
-            <h2 className="text-xl font-bold text-brand-dark tracking-tight">Sign In</h2>
-            <p className="text-xs text-brand-muted mt-1 font-medium">Enter your enterprise credentials to access dashboard</p>
+        {error && (
+          <div className="mb-6 flex items-center gap-2.5 px-4 py-3 bg-[#fce8e6] border border-[#f8b4b0] text-[#c5221f] text-xs font-medium rounded-lg">
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="relative">
+            <input
+              id="email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3.5 rounded-lg border border-[#dadce0] text-[#202124] text-sm placeholder-transparent focus:border-[#1a73e8] focus:ring-1 focus:ring-[#1a73e8] outline-none transition-all peer"
+              placeholder="Email"
+              required
+            />
+            <label
+              htmlFor="email"
+              className="absolute left-3.5 top-[-10px] bg-white px-1 text-xs text-[#5f6368] transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-[14px] peer-placeholder-shown:text-[#5f6368] peer-focus:top-[-10px] peer-focus:text-xs peer-focus:text-[#1a73e8]"
+            >
+              Email Address
+            </label>
           </div>
 
-          {error && (
-            <div className="mb-5 flex items-center gap-2 px-4 py-3 bg-rose-50 border border-rose-200/50 text-rose-700 text-xs font-semibold rounded-lg">
-              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {error}
-            </div>
-          )}
+          <div className="relative">
+            <input
+              id="password"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3.5 rounded-lg border border-[#dadce0] text-[#202124] text-sm placeholder-transparent focus:border-[#1a73e8] focus:ring-1 focus:ring-[#1a73e8] outline-none transition-all peer"
+              placeholder="Password"
+              required
+            />
+            <label
+              htmlFor="password"
+              className="absolute left-3.5 top-[-10px] bg-white px-1 text-xs text-[#5f6368] transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-[14px] peer-placeholder-shown:text-[#5f6368] peer-focus:top-[-10px] peer-focus:text-xs peer-focus:text-[#1a73e8]"
+            >
+              Password
+            </label>
+          </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-1.5">
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg border border-brand-border text-brand-dark text-sm placeholder-brand-muted/40 focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 outline-none transition-all"
-                placeholder="admin@outsourcepro.com"
-                required
-              />
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="password" className="block text-xs font-semibold text-brand-muted uppercase tracking-wider">
-                  Password
-                </label>
-              </div>
-              <input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg border border-brand-border text-brand-dark text-sm placeholder-brand-muted/40 focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 outline-none transition-all"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-
+          <div className="flex items-center justify-between pt-2">
+            <button type="button" className="text-xs font-semibold text-[#1a73e8] hover:text-[#1557b0] transition-colors">
+              Forgot email?
+            </button>
             <Button
               id="btn-login"
               type="submit"
               loading={loading}
-              className="w-full py-2.5 font-bold"
+              className="px-6 py-2.5 bg-[#1a73e8] hover:bg-[#1557b0] active:bg-[#174ea6] text-white text-xs font-bold rounded-lg transition-all shadow-none"
             >
-              Sign In
+              Next
             </Button>
-          </form>
-        </div>
+          </div>
+        </form>
+      </div>
 
-        <p className="text-center text-xs text-brand-muted font-semibold mt-8">
-          OutsourcePro ERP &bull; Secure Enterprise Environment
-        </p>
+      <div className="w-full max-w-[450px] flex items-center justify-between mt-6 px-2 text-xs text-[#5f6368]">
+        <span>English (United States)</span>
+        <div className="flex gap-4">
+          <a href="#" className="hover:underline">Help</a>
+          <a href="#" className="hover:underline">Privacy</a>
+          <a href="#" className="hover:underline">Terms</a>
+        </div>
       </div>
     </div>
   );
 }
+
 

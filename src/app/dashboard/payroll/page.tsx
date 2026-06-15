@@ -1,24 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
 
-const MOCK_PAYROLL = [
-  { id: 1, name: "John Doe", position: "Senior Software Engineer", basic: 15000000, allowance: 2500000, deductions: 500000, thp: 17000000, status: "Paid" },
-  { id: 2, name: "Jane Smith", position: "HR Specialist", basic: 8500000, allowance: 1200000, deductions: 300000, thp: 9400000, status: "Paid" },
-  { id: 3, name: "Michael Johnson", position: "Finance Supervisor", basic: 10000000, allowance: 1800000, deductions: 400000, thp: 11400000, status: "Draft" },
-  { id: 4, name: "Sarah Connor", position: "Recruitment Admin", basic: 6000000, allowance: 800000, deductions: 200000, thp: 6600000, status: "Draft" },
-  { id: 5, name: "David Miller", position: "Site Coordinator", basic: 7000000, allowance: 900000, deductions: 250000, thp: 7650000, status: "Draft" },
-];
+interface PayrollRecord {
+  id: number;
+  period: string;
+  basic_salary: number;
+  allowance: number;
+  gross: number;
+  total_deductions: number;
+  net_salary: number;
+  status: string;
+  employee: {
+    full_name: string;
+    position: string | null;
+  };
+}
 
 export default function PayrollPage() {
-  const [payroll] = useState(MOCK_PAYROLL);
+  const [payroll, setPayroll] = useState<PayrollRecord[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
+  const fetchPayroll = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get<{ data: PayrollRecord[] }>("/payrolls");
+      setPayroll(res.data ?? []);
+    } catch { /* ignore */ }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchPayroll();
+  }, []);
+
   const filtered = payroll.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase())
+    (p.employee?.full_name ?? "").toLowerCase().includes(search.toLowerCase())
   );
 
   const formatIDR = (val: number) => {
@@ -47,20 +69,22 @@ export default function PayrollPage() {
         <Card className="p-5">
           <p className="text-xs font-bold text-brand-muted uppercase tracking-wider">Total Gross Payout</p>
           <p className="text-3xl font-extrabold text-brand-dark tracking-tight mt-1">
-            {formatIDR(payroll.reduce((acc, curr) => acc + curr.thp, 0))}
+            {loading ? "—" : formatIDR(payroll.reduce((acc, curr) => acc + Number(curr.net_salary), 0))}
           </p>
           <p className="text-xs text-brand-muted font-medium mt-1">Sum of all active batches</p>
         </Card>
 
         <Card className="p-5">
           <p className="text-xs font-bold text-brand-muted uppercase tracking-wider">Processed Batches</p>
-          <p className="text-3xl font-extrabold text-google-green tracking-tight mt-1">2 / 5 Paid</p>
+          <p className="text-3xl font-extrabold text-google-green tracking-tight mt-1">
+            {loading ? "—" : `${payroll.filter(p => p.status === "Paid").length} / ${payroll.length} Paid`}
+          </p>
           <p className="text-xs text-brand-muted font-medium mt-1">Remaining in Draft/Approval status</p>
         </Card>
 
         <Card className="p-5">
           <p className="text-xs font-bold text-brand-muted uppercase tracking-wider">Kasbon / Loans Active</p>
-          <p className="text-3xl font-extrabold text-google-yellow tracking-tight mt-1">Rp 4.5M</p>
+          <p className="text-3xl font-extrabold text-google-yellow tracking-tight mt-1">Rp 0</p>
           <p className="text-xs text-brand-muted font-medium mt-1">Awaiting payroll deductions</p>
         </Card>
       </div>
@@ -91,36 +115,50 @@ export default function PayrollPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-brand-border">
-              {filtered.map((p) => (
-                <tr key={p.id} className="hover:bg-[#fafbfc] transition-colors">
-                  <td className="px-6 py-4">
-                    <p className="text-sm font-bold text-brand-dark">{p.name}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm text-brand-muted font-medium">{p.position}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm text-brand-dark font-medium">{formatIDR(p.basic)}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm text-brand-dark font-medium">{formatIDR(p.allowance)}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm text-google-red font-medium">-{formatIDR(p.deductions)}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm font-bold text-brand-primary">{formatIDR(p.thp)}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Badge status={p.status} />
-                  </td>
-                  <td className="px-6 py-4">
-                    <button className="text-xs font-bold text-brand-primary hover:underline transition-all">
-                      View Payslip
-                    </button>
+              {loading ? (
+                <tr>
+                  <td colSpan={8} className="px-6 py-12 text-center text-brand-muted text-sm font-semibold">
+                    Calculating salary parameters...
                   </td>
                 </tr>
-              ))}
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="px-6 py-12 text-center text-brand-muted text-sm font-semibold">
+                    No payroll files processed.
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((p) => (
+                  <tr key={p.id} className="hover:bg-[#fafbfc] transition-colors">
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-bold text-brand-dark">{p.employee?.full_name || "Unknown"}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm text-brand-muted font-medium">{p.employee?.position || "—"}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm text-brand-dark font-medium">{formatIDR(p.basic_salary)}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm text-brand-dark font-medium">{formatIDR(p.allowance)}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm text-google-red font-medium">-{formatIDR(p.total_deductions)}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-bold text-brand-primary">{formatIDR(p.net_salary)}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Badge status={p.status} />
+                    </td>
+                    <td className="px-6 py-4">
+                      <button className="text-xs font-bold text-brand-primary hover:underline transition-all">
+                        View Payslip
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -128,3 +166,4 @@ export default function PayrollPage() {
     </div>
   );
 }
+

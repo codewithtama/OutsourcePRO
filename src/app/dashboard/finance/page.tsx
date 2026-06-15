@@ -1,25 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
 
-const MOCK_INVOICES = [
-  { id: 1, invoiceNumber: "INV-2026-001", client: "PT Astra Internasional", amount: 450000000, date: "2026-06-01", dueDate: "2026-07-01", status: "Sent" },
-  { id: 2, invoiceNumber: "INV-2026-002", client: "PT Telkom Indonesia", amount: 320000000, date: "2026-05-15", dueDate: "2026-06-15", status: "Paid" },
-  { id: 3, invoiceNumber: "INV-2026-003", client: "PT GoTo Gojek Tokopedia", amount: 180000000, date: "2026-05-01", dueDate: "2026-05-31", status: "Overdue" },
-  { id: 4, invoiceNumber: "INV-2026-004", client: "PT Bukalapak.com", amount: 120000000, date: "2026-06-12", dueDate: "2026-07-12", status: "Draft" },
-  { id: 5, invoiceNumber: "INV-2026-005", client: "PT Bank Central Asia", amount: 600000000, date: "2026-06-10", dueDate: "2026-07-10", status: "Sent" },
-];
+interface InvoiceData {
+  id: number;
+  invoice_number: string;
+  client_name: string;
+  invoice_date: string;
+  due_date: string;
+  total: number;
+  status: string;
+}
 
 export default function FinancePage() {
-  const [invoices] = useState(MOCK_INVOICES);
+  const [invoices, setInvoices] = useState<InvoiceData[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
+  const fetchInvoices = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get<{ data: InvoiceData[] }>("/invoices");
+      setInvoices(res.data ?? []);
+    } catch { /* ignore */ }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchInvoices();
+  }, []);
+
   const filtered = invoices.filter((inv) =>
-    inv.invoiceNumber.toLowerCase().includes(search.toLowerCase()) ||
-    inv.client.toLowerCase().includes(search.toLowerCase())
+    inv.invoice_number.toLowerCase().includes(search.toLowerCase()) ||
+    inv.client_name.toLowerCase().includes(search.toLowerCase())
   );
 
   const formatIDR = (val: number) => {
@@ -43,20 +60,26 @@ export default function FinancePage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <Card className="p-5">
-          <p className="text-xs font-bold text-brand-muted uppercase tracking-wider">Total Revenue (June 2026)</p>
-          <p className="text-3xl font-extrabold text-brand-dark tracking-tight mt-1">{formatIDR(1670000000)}</p>
+          <p className="text-xs font-bold text-brand-muted uppercase tracking-wider">Total Invoiced</p>
+          <p className="text-3xl font-extrabold text-brand-dark tracking-tight mt-1">
+            {loading ? "—" : formatIDR(invoices.reduce((acc, curr) => acc + Number(curr.total), 0))}
+          </p>
           <p className="text-xs text-google-green font-bold mt-1.5">&uarr; 8.4% from last month</p>
         </Card>
 
         <Card className="p-5">
           <p className="text-xs font-bold text-brand-muted uppercase tracking-wider">Outstanding Receivables</p>
-          <p className="text-3xl font-extrabold text-google-yellow tracking-tight mt-1">{formatIDR(1230000000)}</p>
-          <p className="text-xs text-brand-muted font-medium mt-1.5">Across 4 sent/unpaid invoices</p>
+          <p className="text-3xl font-extrabold text-google-yellow tracking-tight mt-1">
+            {loading ? "—" : formatIDR(invoices.filter(inv => inv.status !== "Paid").reduce((acc, curr) => acc + Number(curr.total), 0))}
+          </p>
+          <p className="text-xs text-brand-muted font-medium mt-1.5">Across sent/unpaid invoices</p>
         </Card>
 
         <Card className="p-5">
           <p className="text-xs font-bold text-brand-muted uppercase tracking-wider">Collections Ratio</p>
-          <p className="text-3xl font-extrabold text-google-green tracking-tight mt-1">94.2%</p>
+          <p className="text-3xl font-extrabold text-google-green tracking-tight mt-1">
+            {loading ? "—" : `${Math.round((invoices.filter(inv => inv.status === "Paid").length / (invoices.length || 1)) * 100)}%`}
+          </p>
           <p className="text-xs text-brand-muted font-medium mt-1.5">Average collection within 30 days</p>
         </Card>
       </div>
@@ -87,28 +110,42 @@ export default function FinancePage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-brand-border">
-              {filtered.map((inv) => (
-                <tr key={inv.id} className="hover:bg-[#fafbfc] transition-colors">
-                  <td className="px-6 py-4">
-                    <p className="text-sm font-mono text-brand-primary font-bold">{inv.invoiceNumber}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm font-bold text-brand-dark">{inv.client}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm font-bold text-brand-dark">{formatIDR(inv.amount)}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm text-brand-muted font-medium">{inv.date}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm text-brand-muted font-medium">{inv.dueDate}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Badge status={inv.status} />
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-brand-muted text-sm font-semibold">
+                    Compiling balances...
                   </td>
                 </tr>
-              ))}
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-brand-muted text-sm font-semibold">
+                    No active invoices billed.
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((inv) => (
+                  <tr key={inv.id} className="hover:bg-[#fafbfc] transition-colors">
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-mono text-brand-primary font-bold">{inv.invoice_number}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-bold text-brand-dark">{inv.client_name}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-bold text-brand-dark">{formatIDR(inv.total)}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm text-brand-muted font-medium">{inv.invoice_date}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm text-brand-muted font-medium">{inv.due_date}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Badge status={inv.status} />
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -116,3 +153,4 @@ export default function FinancePage() {
     </div>
   );
 }
+

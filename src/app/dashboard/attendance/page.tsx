@@ -1,24 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Badge } from "@/components/Badge";
 
-const MOCK_ATTENDANCE = [
-  { id: 1, name: "John Doe", shift: "Morning Shift (08:00 - 17:00)", checkIn: "07:54", checkOut: "17:05", status: "H" },
-  { id: 2, name: "Jane Smith", shift: "Morning Shift (08:00 - 17:00)", checkIn: "08:15", checkOut: "17:00", status: "I" },
-  { id: 3, name: "Michael Johnson", shift: "Middle Shift (12:00 - 21:00)", checkIn: "11:58", checkOut: "21:02", status: "H" },
-  { id: 4, name: "Sarah Connor", shift: "Morning Shift (08:00 - 17:00)", checkIn: null, checkOut: null, status: "A" },
-  { id: 5, name: "David Miller", shift: "Night Shift (22:00 - 06:00)", checkIn: null, checkOut: null, status: "OFF" },
-];
+interface AttendanceRecord {
+  id: number;
+  date: string;
+  check_in: string | null;
+  check_out: string | null;
+  status: string;
+  note: string | null;
+  employee: {
+    full_name: string;
+  };
+}
 
 export default function AttendancePage() {
-  const [attendance] = useState(MOCK_ATTENDANCE);
+  const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
+  const fetchAttendance = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get<{ data: AttendanceRecord[] }>("/attendances");
+      setAttendance(res.data ?? []);
+    } catch { /* ignore */ }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchAttendance();
+  }, []);
+
   const filtered = attendance.filter((a) =>
-    a.name.toLowerCase().includes(search.toLowerCase())
+    (a.employee?.full_name ?? "").toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -42,23 +61,33 @@ export default function AttendancePage() {
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <Card className="p-4 flex flex-col justify-between">
           <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Hadir (H)</span>
-          <span className="text-2xl font-extrabold text-google-green mt-2">2</span>
+          <span className="text-2xl font-extrabold text-google-green mt-2">
+            {loading ? "—" : attendance.filter(a => a.status === "H").length}
+          </span>
         </Card>
         <Card className="p-4 flex flex-col justify-between">
           <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Izin (I)</span>
-          <span className="text-2xl font-extrabold text-google-yellow mt-2">1</span>
+          <span className="text-2xl font-extrabold text-google-yellow mt-2">
+            {loading ? "—" : attendance.filter(a => a.status === "I").length}
+          </span>
         </Card>
         <Card className="p-4 flex flex-col justify-between">
           <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Sakit (S)</span>
-          <span className="text-2xl font-extrabold text-blue-500 mt-2">0</span>
+          <span className="text-2xl font-extrabold text-blue-500 mt-2">
+            {loading ? "—" : attendance.filter(a => a.status === "S").length}
+          </span>
         </Card>
         <Card className="p-4 flex flex-col justify-between">
           <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Alpha (A)</span>
-          <span className="text-2xl font-extrabold text-google-red mt-2">1</span>
+          <span className="text-2xl font-extrabold text-google-red mt-2">
+            {loading ? "—" : attendance.filter(a => a.status === "A").length}
+          </span>
         </Card>
         <Card className="p-4 flex flex-col justify-between">
           <span className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">Day Off (OFF)</span>
-          <span className="text-2xl font-extrabold text-brand-muted mt-2">1</span>
+          <span className="text-2xl font-extrabold text-brand-muted mt-2">
+            {loading ? "—" : attendance.filter(a => a.status === "OFF").length}
+          </span>
         </Card>
       </div>
 
@@ -80,7 +109,7 @@ export default function AttendancePage() {
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-brand-border bg-[#fafbfc]">
-                {["Employee Name", "Current Shift", "Check-In", "Check-Out", "Status"].map((h) => (
+                {["Employee Name", "Current Date", "Check-In", "Check-Out", "Status", "Note"].map((h) => (
                   <th key={h} className="px-6 py-3.5 text-xs font-bold text-brand-muted uppercase tracking-wider whitespace-nowrap">
                     {h}
                   </th>
@@ -88,25 +117,42 @@ export default function AttendancePage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-brand-border">
-              {filtered.map((record) => (
-                <tr key={record.id} className="hover:bg-[#fafbfc] transition-colors">
-                  <td className="px-6 py-4">
-                    <p className="text-sm font-bold text-brand-dark">{record.name}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm text-brand-muted font-medium">{record.shift}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm font-mono text-brand-dark font-medium">{record.checkIn || "—"}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm font-mono text-brand-dark font-medium">{record.checkOut || "—"}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Badge status={record.status} />
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-brand-muted text-sm font-semibold">
+                    Loading daily logs...
                   </td>
                 </tr>
-              ))}
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-brand-muted text-sm font-semibold">
+                    No attendance records found matching search query.
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((record) => (
+                  <tr key={record.id} className="hover:bg-[#fafbfc] transition-colors">
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-bold text-brand-dark">{record.employee?.full_name || "Unknown"}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm text-brand-muted font-medium">{record.date}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-mono text-brand-dark font-medium">{record.check_in || "—"}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-mono text-brand-dark font-medium">{record.check_out || "—"}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Badge status={record.status} />
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-xs text-brand-muted font-medium">{record.note || "—"}</p>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -114,3 +160,4 @@ export default function AttendancePage() {
     </div>
   );
 }
+
