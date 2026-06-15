@@ -139,10 +139,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </svg>
           </button>
           <div className="flex-1" />
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-xs text-slate-400 hidden sm:block">System Online</span>
-          </div>
+          <div />
         </header>
 
         <main className="flex-1 overflow-auto">{children}</main>
