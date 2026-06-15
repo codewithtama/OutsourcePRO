@@ -1,25 +1,21 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const outfit = Outfit({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-outfit",
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
-  title: "OutsourcePro Enterprise ERP",
+  title: "OutsourcePro - Enterprise ERP",
   description: "Enterprise ERP for outsourcing companies",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${outfit.variable} font-sans antialiased bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50`}>
+    <html lang="en">
+      <body className={`${inter.variable} font-sans antialiased bg-[#f8f9fa] text-[#202124]`}>
         {children}
       </body>
     </html>

@@ -10,12 +10,7 @@ interface ModalProps {
   size?: "sm" | "md" | "lg" | "xl";
 }
 
-const SIZES = {
-  sm: "max-w-sm",
-  md: "max-w-md",
-  lg: "max-w-2xl",
-  xl: "max-w-4xl",
-};
+const SIZES = { sm: "max-w-sm", md: "max-w-md", lg: "max-w-2xl", xl: "max-w-4xl" };
 
 export function Modal({ open, onClose, title, children, size = "lg" }: ModalProps) {
   useEffect(() => {
@@ -27,11 +22,11 @@ export function Modal({ open, onClose, title, children, size = "lg" }: ModalProp
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className={`w-full ${SIZES[size]} bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto`}>
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-800">
-          <h2 className="text-lg font-bold text-white">{title}</h2>
-          <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30">
+      <div className={`w-full ${SIZES[size]} bg-white rounded-xl shadow-google max-h-[90vh] overflow-y-auto`}>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#dadce0]">
+          <h2 className="text-base font-medium text-[#202124]">{title}</h2>
+          <button onClick={onClose} className="text-[#5f6368] hover:text-[#202124] transition-colors p-1 rounded hover:bg-[#f1f3f4]">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>

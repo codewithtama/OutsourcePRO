@@ -9,18 +9,18 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
 export function Input({ label, error, id, className = "", onChange, ...props }: InputProps) {
   return (
     <div className={className}>
-      <label htmlFor={id} className="block text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1.5">
-        {label}
-      </label>
+      <label htmlFor={id} className="block text-sm font-medium text-[#5f6368] mb-1">{label}</label>
       <input
         id={id}
         onChange={onChange ? (e) => onChange(e.target.value) : undefined}
-        className={`w-full px-3 py-2.5 bg-slate-800 border text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition placeholder-slate-600 ${
-          error ? "border-red-500 text-red-400" : "border-slate-700 text-slate-100"
+        className={`w-full px-3 py-2.5 rounded-lg border text-sm outline-none transition-all placeholder-[#9aa0a6] focus:ring-2 ${
+          error
+            ? "border-[#d93025] text-[#d93025] focus:border-[#d93025] focus:ring-[#d93025]/20"
+            : "border-[#dadce0] text-[#202124] focus:border-[#1a73e8] focus:ring-[#1a73e8]/20"
         }`}
         {...props}
       />
-      {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
+      {error && <p className="text-xs text-[#d93025] mt-1">{error}</p>}
     </div>
   );
 }
@@ -34,23 +34,21 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 export function Select({ label, error, id, options, className = "", ...props }: SelectProps) {
   return (
     <div className={className}>
-      <label htmlFor={id} className="block text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1.5">
-        {label}
-      </label>
+      <label htmlFor={id} className="block text-sm font-medium text-[#5f6368] mb-1">{label}</label>
       <select
         id={id}
-        className={`w-full px-3 py-2.5 bg-slate-800 border text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
-          error ? "border-red-500 text-red-400" : "border-slate-700 text-slate-100"
+        className={`w-full px-3 py-2.5 rounded-lg border text-sm outline-none transition-all focus:ring-2 ${
+          error
+            ? "border-[#d93025] text-[#d93025] focus:border-[#d93025] focus:ring-[#d93025]/20"
+            : "border-[#dadce0] text-[#202124] focus:border-[#1a73e8] focus:ring-[#1a73e8]/20"
         }`}
         {...props}
       >
         {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
+          <option key={opt.value} value={opt.value}>{opt.label}</option>
         ))}
       </select>
-      {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
+      {error && <p className="text-xs text-[#d93025] mt-1">{error}</p>}
     </div>
   );
 }

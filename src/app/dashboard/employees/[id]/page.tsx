@@ -22,11 +22,11 @@ export default function EmployeeDetail() {
 
   if (loading) {
     return (
-      <div className="p-6 lg:p-8 max-w-4xl mx-auto space-y-6">
-        <div className="h-8 w-48 bg-slate-800 rounded animate-pulse" />
+      <div className="space-y-6">
+        <div className="h-8 w-48 bg-[#f1f3f4] rounded animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="h-16 bg-slate-800 rounded animate-pulse" />
+            <div key={i} className="h-16 bg-[#f1f3f4] rounded animate-pulse" />
           ))}
         </div>
       </div>
@@ -35,8 +35,8 @@ export default function EmployeeDetail() {
 
   if (!emp) {
     return (
-      <div className="p-6 lg:p-8 max-w-4xl mx-auto text-center">
-        <p className="text-slate-500">Employee not found</p>
+      <div className="text-center py-12">
+        <p className="text-[#5f6368]">Employee not found</p>
         <Button variant="secondary" onClick={() => router.back()} className="mt-4">Go Back</Button>
       </div>
     );
@@ -58,28 +58,31 @@ export default function EmployeeDetail() {
   ];
 
   return (
-    <div className="p-6 lg:p-8 max-w-4xl mx-auto space-y-6">
+    <div className="space-y-6">
+      <div>
+        <button onClick={() => router.back()} className="text-[#5f6368] hover:text-[#1a73e8] text-sm mb-2 flex items-center gap-1 transition-colors">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to directory
+        </button>
+      </div>
+
       <div className="flex items-start justify-between">
         <div>
-          <button onClick={() => router.back()} className="text-slate-400 hover:text-white text-sm mb-2 flex items-center gap-1 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-            Back
-          </button>
-          <h1 className="text-2xl font-bold text-white tracking-tight">{emp.full_name}</h1>
-          <p className="text-slate-400 text-sm mt-1">{emp.position} &middot; {emp.department}</p>
+          <h1 className="text-2xl font-normal text-[#202124] tracking-tight">{emp.full_name}</h1>
+          <p className="text-[#5f6368] text-sm mt-1">{emp.position} &middot; {emp.department}</p>
         </div>
         <Badge status={emp.status} />
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-        <h2 className="text-base font-semibold text-white mb-4">Personal Information</h2>
+      <div className="bg-white border border-[#dadce0] rounded-xl p-6 shadow-google-card">
+        <h2 className="text-base font-medium text-[#202124] mb-4">Personal Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {fields.map((f) => (
-            <div key={f.label} className="p-3 bg-slate-800/50 rounded-lg">
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{f.label}</p>
-              <p className="text-sm text-white mt-1">{f.value}</p>
+            <div key={f.label} className="p-3 bg-[#f8f9fa] rounded-lg">
+              <p className="text-xs font-medium text-[#5f6368] uppercase tracking-wider">{f.label}</p>
+              <p className="text-sm text-[#202124] mt-1">{f.value}</p>
             </div>
           ))}
         </div>
