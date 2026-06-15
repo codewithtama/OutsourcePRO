@@ -7,10 +7,10 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANTS = {
-  primary: "bg-[#1a73e8] hover:bg-[#1557b0] active:bg-[#174ea6] text-white",
-  secondary: "bg-white hover:bg-[#f1f3f4] text-[#3c4043] border border-[#dadce0]",
-  danger: "bg-[#d93025] hover:bg-[#b3261e] active:bg-[#a50e0e] text-white",
-  ghost: "text-[#5f6368] hover:bg-[#f1f3f4] hover:text-[#202124]",
+  primary: "bg-brand-primary hover:bg-[#1a54dc] active:bg-[#1546bd] text-white shadow-sm",
+  secondary: "bg-white hover:bg-brand-primary-light text-brand-dark border border-brand-border hover:border-brand-primary/30 transition-all",
+  danger: "bg-google-red hover:bg-[#c52d27] active:bg-[#a8221c] text-white shadow-sm",
+  ghost: "text-brand-muted hover:bg-[#f1f3f5] hover:text-brand-dark",
 };
 
 const SIZES = {
@@ -25,16 +25,17 @@ export function Button({
   return (
     <button
       disabled={disabled || loading}
-      className={`inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-[#1a73e8]/40 focus:outline-none ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-brand-primary/30 focus:outline-none ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
       {...props}
     >
-      {loading && (
-        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-        </svg>
-      )}
-      {children}
+      {loading ? (
+        <span className="flex items-center gap-1.5 px-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-current pulse-dot-1" />
+          <span className="w-1.5 h-1.5 rounded-full bg-current pulse-dot-2" />
+          <span className="w-1.5 h-1.5 rounded-full bg-current pulse-dot-3" />
+        </span>
+      ) : children}
     </button>
   );
 }
+

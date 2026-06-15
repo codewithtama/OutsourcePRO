@@ -7,7 +7,7 @@ import { NAV_ITEMS } from "@/lib/constants";
 
 function NavIcon({ path }: { path: string }) {
   return (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+    <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" d={path} />
     </svg>
   );
@@ -52,32 +52,32 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-[#f8f9fa]">
+    <div className="flex min-h-screen bg-[#fcfdfe] text-brand-dark">
       {sidebarOpen && (
-        <div className="fixed inset-0 z-20 bg-black/30 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 z-40 bg-brand-dark/20 backdrop-blur-sm lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
       <aside
-        className={`fixed top-0 left-0 z-30 h-full w-64 flex flex-col bg-white border-r border-[#dadce0] transform transition-transform duration-300 lg:translate-x-0 lg:static lg:z-auto ${
+        className={`fixed top-0 left-0 z-50 h-full w-64 flex flex-col bg-white border-r border-brand-border transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-auto ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center gap-3 px-6 py-4 border-b border-[#dadce0]">
-          <div className="w-8 h-8 rounded-full bg-[#1a73e8] flex items-center justify-center flex-shrink-0">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+        <div className="flex items-center gap-3 px-6 py-5 border-b border-brand-border">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-primary to-indigo-600 flex items-center justify-center flex-shrink-0 shadow-md shadow-brand-primary/20">
+            <svg className="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
           <div>
-            <p className="text-[#202124] font-medium text-sm leading-tight">OutsourcePro</p>
-            <p className="text-[#5f6368] text-xs">Enterprise ERP</p>
+            <p className="text-brand-dark font-bold text-sm leading-tight tracking-tight">OutsourcePro</p>
+            <p className="text-brand-muted text-xs font-semibold">Enterprise ERP</p>
           </div>
         </div>
 
-        <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">
+        <nav className="flex-1 px-4 py-4 space-y-4 overflow-y-auto">
           {sections.map((section) => (
-            <div key={section.label}>
-              <p className="px-3 pt-3 pb-1 text-xs font-medium text-[#5f6368] uppercase tracking-wider">
+            <div key={section.label} className="space-y-1">
+              <p className="px-3 text-[10px] font-bold text-brand-muted uppercase tracking-widest opacity-80">
                 {section.label}
               </p>
               {section.items.map((item) => {
@@ -87,10 +87,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     key={item.href}
                     href={item.href}
                     onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 active:scale-[0.98] ${
                       isActive
-                        ? "bg-[#e8f0fe] text-[#1a73e8] font-medium"
-                        : "text-[#5f6368] hover:bg-[#f1f3f4] hover:text-[#202124]"
+                        ? "bg-brand-primary-light text-brand-primary font-bold border-l-2 border-brand-primary rounded-l-none"
+                        : "text-brand-muted hover:bg-[#f8f9fa] hover:text-brand-dark"
                     }`}
                   >
                     <NavIcon path={item.icon} />
@@ -102,21 +102,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           ))}
         </nav>
 
-        <div className="p-4 border-t border-[#dadce0]">
-          <div className="flex items-center gap-3 px-2 py-2">
-            <div className="w-8 h-8 rounded-full bg-[#1a73e8] flex items-center justify-center flex-shrink-0">
-              <span className="text-xs font-medium text-white">{initials}</span>
+        <div className="p-4 border-t border-brand-border bg-[#fafbfc]">
+          <div className="flex items-center gap-3 px-2 py-2 mb-3">
+            <div className="w-9 h-9 rounded-xl bg-brand-primary/10 text-brand-primary border border-brand-primary/20 flex items-center justify-center flex-shrink-0 font-bold text-sm">
+              {initials}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-[#202124] truncate">{user?.name || "Super Admin"}</p>
-              <p className="text-xs text-[#5f6368] truncate">{user?.email || "admin@outsourcepro.com"}</p>
+              <p className="text-sm font-bold text-brand-dark truncate leading-none mb-1">{user?.name || "Super Admin"}</p>
+              <p className="text-xs text-brand-muted truncate font-medium">{user?.email || "admin@outsourcepro.com"}</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="mt-1 w-full flex items-center gap-2 px-3 py-2 text-sm text-[#5f6368] hover:text-[#d93025] hover:bg-[#fce8e6] rounded-lg transition-all"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold text-google-red bg-rose-50 hover:bg-rose-100/70 border border-rose-100 rounded-lg transition-all"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             Sign Out
@@ -125,8 +125,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="sticky top-0 z-10 flex items-center gap-4 px-6 py-3 bg-white/90 backdrop-blur-sm border-b border-[#dadce0]">
-          <button className="lg:hidden text-[#5f6368] hover:text-[#202124]" onClick={() => setSidebarOpen(true)}>
+        <header className="sticky top-0 z-30 flex items-center gap-4 px-6 py-4 bg-white/70 backdrop-blur-md border-b border-brand-border">
+          <button className="lg:hidden text-brand-muted hover:text-brand-dark" onClick={() => setSidebarOpen(true)}>
             <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -134,10 +134,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex-1" />
         </header>
 
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto animate-fade-in">
           <div className="max-w-7xl mx-auto p-6 lg:p-8">{children}</div>
         </main>
       </div>
     </div>
   );
 }
+

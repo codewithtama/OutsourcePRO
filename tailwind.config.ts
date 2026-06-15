@@ -9,31 +9,40 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        brand: {
+          primary: "hsl(var(--primary))",
+          "primary-hover": "hsl(var(--primary-hover))",
+          "primary-light": "hsl(var(--primary-light))",
+          dark: "hsl(var(--text-dark))",
+          muted: "hsl(var(--text-muted))",
+          border: "hsl(var(--border-light))",
+        },
         google: {
-          blue: "#1a73e8",
-          "blue-50": "#e8f0fe",
-          red: "#d93025",
-          yellow: "#f9ab00",
-          green: "#1e8e3e",
-          grey: "#5f6368",
-          "grey-100": "#f8f9fa",
-          "grey-200": "#e8eaed",
-          "grey-300": "#dadce0",
-          "grey-500": "#9aa0a6",
-          "grey-700": "#5f6368",
-          "grey-900": "#202124",
+          blue: "#1e5cf2",
+          "blue-50": "#eaf1ff",
+          red: "#e03b30",
+          yellow: "#f5a623",
+          green: "#10b981",
+          grey: "#6b7280",
+          "grey-100": "#f9fafb",
+          "grey-200": "#f3f4f6",
+          "grey-300": "#e5e7eb",
+          "grey-500": "#9ca3af",
+          "grey-700": "#4b5563",
+          "grey-900": "#1f2937",
         },
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        sans: ["var(--font-sans)", "system-ui", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
       },
       boxShadow: {
-        google: "0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15)",
-        "google-hover": "0 1px 2px 0 rgba(60,64,67,.3), 0 2px 6px 2px rgba(60,64,67,.15)",
-        "google-card": "0 1px 2px 0 rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1)",
+        premium: "0 1px 3px 0 rgba(0, 0, 0, 0.03), 0 4px 12px 0 rgba(0, 0, 0, 0.04)",
+        "premium-hover": "0 2px 6px 0 rgba(0, 0, 0, 0.04), 0 12px 32px 0 rgba(0, 0, 0, 0.08)",
+        "google-card": "0 1px 3px 0 rgba(0, 0, 0, 0.03), 0 4px 12px 0 rgba(0, 0, 0, 0.04)",
       },
     },
   },
   plugins: [],
 };
 export default config;
+

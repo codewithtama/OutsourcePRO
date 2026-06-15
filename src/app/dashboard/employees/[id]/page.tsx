@@ -22,11 +22,12 @@ export default function EmployeeDetail() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-8 w-48 bg-[#f1f3f4] rounded animate-pulse" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-6 animate-pulse">
+        <div className="h-6 w-32 bg-brand-primary-light rounded-lg" />
+        <div className="h-8 w-64 bg-brand-primary-light rounded-lg" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="h-16 bg-[#f1f3f4] rounded animate-pulse" />
+            <div key={i} className="h-20 bg-brand-primary-light rounded-xl" />
           ))}
         </div>
       </div>
@@ -35,8 +36,8 @@ export default function EmployeeDetail() {
 
   if (!emp) {
     return (
-      <div className="text-center py-12">
-        <p className="text-[#5f6368]">Employee not found</p>
+      <div className="text-center py-16">
+        <p className="text-brand-muted text-lg font-bold">Employee not found</p>
         <Button variant="secondary" onClick={() => router.back()} className="mt-4">Go Back</Button>
       </div>
     );
@@ -60,37 +61,38 @@ export default function EmployeeDetail() {
   return (
     <div className="space-y-6">
       <div>
-        <button onClick={() => router.back()} className="text-[#5f6368] hover:text-[#1a73e8] text-sm mb-2 flex items-center gap-1 transition-colors">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+        <button onClick={() => router.back()} className="text-brand-muted hover:text-brand-primary text-xs font-bold mb-2 flex items-center gap-1 transition-all">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
-          Back to directory
+          Back to Directory
         </button>
       </div>
 
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-normal text-[#202124] tracking-tight">{emp.full_name}</h1>
-          <p className="text-[#5f6368] text-sm mt-1">{emp.position} &middot; {emp.department}</p>
+          <h1 className="text-3xl font-extrabold text-brand-dark tracking-tight">{emp.full_name}</h1>
+          <p className="text-brand-muted text-sm font-semibold mt-1">{emp.position} &middot; {emp.department}</p>
         </div>
         <Badge status={emp.status} />
       </div>
 
-      <div className="bg-white border border-[#dadce0] rounded-xl p-6 shadow-google-card">
-        <h2 className="text-base font-medium text-[#202124] mb-4">Personal Information</h2>
+      <div className="bg-white border border-brand-border rounded-2xl p-6 shadow-premium">
+        <h2 className="text-base font-bold text-brand-dark tracking-tight mb-5">Personal Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {fields.map((f) => (
-            <div key={f.label} className="p-3 bg-[#f8f9fa] rounded-lg">
-              <p className="text-xs font-medium text-[#5f6368] uppercase tracking-wider">{f.label}</p>
-              <p className="text-sm text-[#202124] mt-1">{f.value}</p>
+            <div key={f.label} className="p-4 bg-[#fafbfc] border border-brand-border rounded-xl">
+              <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider">{f.label}</p>
+              <p className="text-sm font-bold text-brand-dark mt-1.5">{f.value}</p>
             </div>
           ))}
         </div>
       </div>
 
       <div className="flex gap-3">
-        <Button variant="secondary" onClick={() => router.back()}>Back to Directory</Button>
+        <Button variant="secondary" onClick={() => router.back()} className="text-xs">Back to Directory</Button>
       </div>
     </div>
   );
 }
+

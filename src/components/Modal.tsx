@@ -22,11 +22,11 @@ export function Modal({ open, onClose, title, children, size = "lg" }: ModalProp
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30">
-      <div className={`w-full ${SIZES[size]} bg-white rounded-xl shadow-google max-h-[90vh] overflow-y-auto`}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#dadce0]">
-          <h2 className="text-base font-medium text-[#202124]">{title}</h2>
-          <button onClick={onClose} className="text-[#5f6368] hover:text-[#202124] transition-colors p-1 rounded hover:bg-[#f1f3f4]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/30 backdrop-blur-sm transition-all duration-300">
+      <div className={`w-full ${SIZES[size]} bg-white rounded-2xl border border-brand-border shadow-premium max-h-[90vh] overflow-y-auto animate-fade-in`}>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-brand-border">
+          <h2 className="text-base font-bold text-brand-dark tracking-tight">{title}</h2>
+          <button onClick={onClose} className="text-brand-muted hover:text-brand-dark transition-all p-1.5 rounded-lg hover:bg-brand-primary-light">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -37,3 +37,4 @@ export function Modal({ open, onClose, title, children, size = "lg" }: ModalProp
     </div>
   );
 }
+

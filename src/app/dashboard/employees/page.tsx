@@ -129,11 +129,11 @@ export default function EmployeeDirectory() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-normal text-[#202124] tracking-tight">Employee Directory</h1>
-          <p className="text-[#5f6368] text-sm mt-1">{total} total employees</p>
+          <h1 className="text-3xl font-extrabold text-brand-dark tracking-tight">Employee Directory</h1>
+          <p className="text-brand-muted text-sm mt-1 font-semibold">{total} registered team members</p>
         </div>
-        <Button onClick={openAddModal}>
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+        <Button onClick={openAddModal} className="text-xs font-bold shadow-md shadow-brand-primary/10">
+          <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
           </svg>
           Add Employee
@@ -141,7 +141,7 @@ export default function EmployeeDirectory() {
       </div>
 
       <div className="relative max-w-sm">
-        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aa0a6]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-muted/70" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
         <input
@@ -149,23 +149,23 @@ export default function EmployeeDirectory() {
           placeholder="Search by name, ID, department..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 bg-white border border-[#dadce0] text-[#202124] text-sm rounded-lg placeholder-[#9aa0a6] focus:outline-none focus:ring-2 focus:ring-[#1a73e8]/20 focus:border-[#1a73e8] transition"
+          className="w-full pl-9 pr-4 py-2.5 bg-white border border-brand-border text-brand-dark text-sm rounded-lg placeholder-brand-muted/60 focus:outline-none focus:ring-4 focus:ring-brand-primary/10 focus:border-brand-primary transition-all duration-200"
         />
       </div>
 
-      <div className="bg-white border border-[#dadce0] rounded-xl overflow-hidden shadow-google-card">
+      <div className="bg-white border border-brand-border rounded-2xl overflow-hidden shadow-premium">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="border-b border-[#dadce0] bg-[#f8f9fa]">
+              <tr className="border-b border-brand-border bg-[#fafbfc]">
                 {["Employee ID", "Name", "Position", "Department", "Site", "Status", ""].map((h) => (
-                  <th key={h} className="px-5 py-3 text-xs font-medium text-[#5f6368] uppercase tracking-wider whitespace-nowrap">
+                  <th key={h} className="px-6 py-3.5 text-xs font-bold text-brand-muted uppercase tracking-wider whitespace-nowrap">
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#dadce0]">
+            <tbody className="divide-y divide-brand-border">
               {loading ? (
                 <TableSkeleton />
               ) : filtered.length === 0 ? (
@@ -174,35 +174,35 @@ export default function EmployeeDirectory() {
                 filtered.map((emp) => (
                   <tr
                     key={emp.id}
-                    className="hover:bg-[#f8f9fa] transition-colors cursor-pointer"
+                    className="hover:bg-[#fafbfc] transition-all duration-200 cursor-pointer"
                     onClick={() => router.push(`/dashboard/employees/${emp.id}`)}
                   >
-                    <td className="px-5 py-4 text-sm font-mono text-[#1a73e8]">{emp.employee_id}</td>
-                    <td className="px-5 py-4">
-                      <p className="text-sm font-medium text-[#202124]">{emp.full_name}</p>
-                      <p className="text-xs text-[#5f6368]">{emp.email}</p>
+                    <td className="px-6 py-4 text-sm font-mono text-brand-primary font-bold">{emp.employee_id}</td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-bold text-brand-dark leading-tight">{emp.full_name}</p>
+                      <p className="text-xs text-brand-muted font-medium mt-0.5">{emp.email}</p>
                     </td>
-                    <td className="px-5 py-4 text-sm text-[#3c4043]">{emp.position ?? "—"}</td>
-                    <td className="px-5 py-4 text-sm text-[#3c4043]">{emp.department ?? "—"}</td>
-                    <td className="px-5 py-4 text-sm text-[#3c4043]">{emp.site ?? "—"}</td>
-                    <td className="px-5 py-4"><Badge status={emp.status} /></td>
-                    <td className="px-5 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1">
+                    <td className="px-6 py-4 text-sm text-brand-dark font-medium">{emp.position ?? "—"}</td>
+                    <td className="px-6 py-4 text-sm text-brand-dark font-medium">{emp.department ?? "—"}</td>
+                    <td className="px-6 py-4 text-sm text-brand-dark font-medium">{emp.site ?? "—"}</td>
+                    <td className="px-6 py-4"><Badge status={emp.status} /></td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
                         <button
-                          onClick={(e) => { e.stopPropagation(); openEditModal(emp); }}
-                          className="text-[#5f6368] hover:text-[#1a73e8] transition-colors p-1.5 rounded hover:bg-[#e8f0fe]"
+                          onClick={() => openEditModal(emp)}
+                          className="text-brand-muted hover:text-brand-primary transition-all p-2 rounded-lg hover:bg-brand-primary-light"
                           title="Edit employee"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
                         </button>
                         <button
-                          onClick={(e) => { e.stopPropagation(); setDeleteTarget(emp); }}
-                          className="text-[#5f6368] hover:text-[#d93025] transition-colors p-1.5 rounded hover:bg-[#fce8e6]"
+                          onClick={() => setDeleteTarget(emp)}
+                          className="text-brand-muted hover:text-google-red transition-all p-2 rounded-lg hover:bg-rose-50"
                           title="Delete employee"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                         </button>
@@ -219,7 +219,7 @@ export default function EmployeeDirectory() {
 
       <Modal open={showModal} onClose={() => setShowModal(false)} title={editingEmployee ? "Edit Employee" : "Add New Employee"} size="lg">
         {formError && (
-          <div className="mx-6 mt-4 px-4 py-3 bg-[#fce8e6] border border-[#d93025]/30 text-[#d93025] text-sm rounded-lg">{formError}</div>
+          <div className="mx-6 mt-4 px-4 py-3 bg-rose-50 border border-rose-200/50 text-google-red text-xs font-semibold rounded-lg">{formError}</div>
         )}
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -236,40 +236,42 @@ export default function EmployeeDirectory() {
             <Input label="Site" id="emp-site" value={form.site} onChange={(v) => setForm((f) => ({ ...f, site: v }))} placeholder="HQ Jakarta" />
             <Select label="Status *" id="emp-status" value={form.status} onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))} options={STATUS_OPTIONS} />
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-[#5f6368] mb-1" htmlFor="emp-address">Address</label>
+              <label className="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-1.5" htmlFor="emp-address">Address</label>
               <textarea
                 id="emp-address"
                 value={form.address}
                 onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
                 rows={2}
                 placeholder="Jl. Contoh No. 1, Jakarta"
-                className="w-full px-3 py-2.5 border border-[#dadce0] text-[#202124] text-sm rounded-lg outline-none focus:ring-2 focus:ring-[#1a73e8]/20 focus:border-[#1a73e8] transition resize-none placeholder-[#9aa0a6]"
+                className="w-full px-4 py-2.5 border border-brand-border text-brand-dark text-sm rounded-lg outline-none focus:ring-4 focus:ring-brand-primary/10 focus:border-brand-primary transition-all duration-200 resize-none placeholder-brand-muted/40"
               />
             </div>
           </div>
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-4 border-t border-brand-border">
             <Button type="button" variant="secondary" onClick={() => setShowModal(false)} className="flex-1">Cancel</Button>
-            <Button type="submit" loading={submitting} className="flex-1">{editingEmployee ? "Update Employee" : "Save Employee"}</Button>
+            <Button type="submit" loading={submitting} className="flex-1">Save Employee</Button>
           </div>
         </form>
       </Modal>
 
       <Modal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} title="Delete Employee" size="sm">
         <div className="p-6 text-center">
-          <div className="w-12 h-12 rounded-full bg-[#fce8e6] flex items-center justify-center mx-auto mb-4">
-            <svg className="w-6 h-6 text-[#d93025]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+          <div className="w-12 h-12 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center mx-auto mb-4">
+            <svg className="w-6 h-6 text-google-red" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
           </div>
-          <p className="text-[#5f6368] text-sm mt-1">
-            Are you sure you want to remove <span className="text-[#202124] font-medium">{deleteTarget?.full_name}</span>?
+          <p className="text-brand-dark text-sm font-bold">Remove Employee</p>
+          <p className="text-brand-muted text-xs font-semibold mt-1.5 leading-relaxed">
+            Are you sure you want to delete <span className="text-brand-dark">{deleteTarget?.full_name}</span>? This action cannot be undone.
           </p>
           <div className="flex gap-3 mt-6">
-            <Button variant="secondary" onClick={() => setDeleteTarget(null)} className="flex-1">Cancel</Button>
-            <Button variant="danger" loading={deleting} onClick={handleDelete} className="flex-1">Delete</Button>
+            <Button variant="secondary" onClick={() => setDeleteTarget(null)} className="flex-1 text-xs">Cancel</Button>
+            <Button variant="danger" loading={deleting} onClick={handleDelete} className="flex-1 text-xs">Delete</Button>
           </div>
         </div>
       </Modal>
     </div>
   );
 }
+
