@@ -14,6 +14,8 @@ export const STATUS_STYLES: Record<string, string> = {
   OFF: "bg-gray-50 text-gray-400 border-gray-200/40",
   PKWT: "bg-indigo-50 text-indigo-700 border-indigo-200/50",
   PKWTT: "bg-purple-50 text-purple-700 border-purple-200/50",
+  Internship: "bg-sky-50 text-sky-700 border-sky-200/50",
+  Probation: "bg-amber-50 text-amber-700 border-amber-200/50",
   Expired: "bg-rose-50 text-rose-600 border-rose-200/50",
 };
 

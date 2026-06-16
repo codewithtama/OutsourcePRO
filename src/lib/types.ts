@@ -53,6 +53,26 @@ export interface EmployeeHistory {
   effective_date: string;
 }
 
+export interface Contract {
+  id: number;
+  employee_id: number;
+  contract_number: string;
+  contract_type: "PKWT" | "PKWTT" | "Internship" | "Probation";
+  start_date: string;
+  end_date: string | null;
+  document_path: string | null;
+  status: "Active" | "Expired" | "Terminated";
+  created_at?: string;
+  updated_at?: string;
+  employee?: {
+    id: number;
+    employee_id: string;
+    full_name: string;
+    position: string | null;
+    site: string | null;
+  };
+}
+
 export interface Role {
   id: number;
   name: string;
