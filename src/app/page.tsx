@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/Button";
+import { api } from "@/lib/api";
+import { User } from "@/lib/types";
+
+interface LoginResponse {
+  access_token: string;
+  token_type: string;
+  user: User;
+}
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -17,17 +25,7 @@ export default function Login() {
     setError("");
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8001/api";
-      const res = await fetch(`${apiUrl}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error?.message || data.message || "Invalid credentials");
-      }
+      const data = await api.post<LoginResponse>("/login", { email, password });
 
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("user", JSON.stringify(data.user));
@@ -129,13 +127,12 @@ export default function Login() {
       <div className="w-full max-w-[450px] flex items-center justify-between mt-6 px-2 text-xs text-[#5f6368]">
         <span>English (United States)</span>
         <div className="flex gap-4">
-          <a href="#" className="hover:underline">Help</a>
-          <a href="#" className="hover:underline">Privacy</a>
-          <a href="#" className="hover:underline">Terms</a>
+          <span>Help</span>
+          <span>Privacy</span>
+          <span>Terms</span>
         </div>
       </div>
     </div>
   );
 }
-
 

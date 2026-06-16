@@ -4,6 +4,8 @@ export interface User {
   email: string;
   roles: { id: number; name: string }[];
   permissions: { id: number; name: string }[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Employee {

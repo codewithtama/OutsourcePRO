@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { NAV_ITEMS } from "@/lib/constants";
+import { api } from "@/lib/api";
 
 function NavIcon({ path }: { path: string }) {
   return (
@@ -28,12 +29,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8001/api";
     try {
-      await fetch(`${apiUrl}/logout`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
-      });
+      if (token) await api.post("/logout");
     } catch {}
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -141,4 +138,3 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </div>
   );
 }
-

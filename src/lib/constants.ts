@@ -17,6 +17,15 @@ export const STATUS_STYLES: Record<string, string> = {
   Internship: "bg-sky-50 text-sky-700 border-sky-200/50",
   Probation: "bg-amber-50 text-amber-700 border-amber-200/50",
   Expired: "bg-rose-50 text-rose-600 border-rose-200/50",
+  // Roles
+  "Super Admin": "bg-rose-50 text-rose-600 border-rose-200/50",
+  Director: "bg-purple-50 text-purple-700 border-purple-200/50",
+  "HR Manager": "bg-blue-50 text-blue-700 border-blue-200/50",
+  "HR Admin": "bg-sky-50 text-sky-700 border-sky-200/50",
+  Recruiter: "bg-amber-50 text-amber-700 border-amber-200/50",
+  "Payroll Staff": "bg-emerald-50 text-emerald-700 border-emerald-200/50",
+  "Finance Staff": "bg-indigo-50 text-indigo-700 border-indigo-200/50",
+  "Site Coordinator": "bg-teal-50 text-teal-700 border-teal-200/50",
 };
 
 export const NAV_ITEMS = [
